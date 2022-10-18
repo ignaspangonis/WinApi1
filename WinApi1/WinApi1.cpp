@@ -165,13 +165,42 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
             DestroyWindow(hWnd); // Sends WM_DESTROY
             break;
         case ID_PRESS_ME_BUTTON:
+            if (randomNumber % 5 == 0) {
+                const int userActionId = MessageBox(
+                    hWnd, 
+                    L"You won a medal! Are you going to take it?", 
+                    L"Congrats!", 
+                    MB_YESNO | MB_ICONQUESTION
+                );
+
+                if (userActionId == IDYES) {
+                    MessageBox(
+                        hWnd,
+                        L"Here you go!",
+                        L"Medal given",
+                        MB_OK | MB_ICONINFORMATION
+                    );
+
+                    DestroyWindow(hWnd);
+
+                    break;
+                }
+
+                MessageBox(
+                    hWnd,
+                    L"Continue playing, sir or madam!",
+                    L"Continuing",
+                    MB_OK | MB_ICONINFORMATION
+                );
+            } 
+            
             DestroyWindow(pressMeButton);
             UpdateWindow(hWnd); // forces an immediate redraw for all currently accumulated invalidated areas
 
             pressMeButton = CreateSquareButton(
-                (HMENU)ID_PRESS_ME_BUTTON, 
+                (HMENU)ID_PRESS_ME_BUTTON,
                 hWnd, (LPWSTR)L"PRESS ME",
-                10 + randomNumber, 
+                10 + randomNumber,
                 10 + randomNumberTwo
             );
 
