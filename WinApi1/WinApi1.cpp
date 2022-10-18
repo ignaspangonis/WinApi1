@@ -154,6 +154,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
+
         // Parse the menu selections:
         switch (wmId)
         {
@@ -178,19 +179,19 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
+
+        break;
     }
-    break;
     case WM_PAINT: // Allows to change how window is drawn
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
-        // Drawing code
         PaintSquare(hdc, 10 + randomNumber, 10 + randomNumberTwo);
-
         EndPaint(hWnd, &ps);
+
+        break;
     }
-    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
