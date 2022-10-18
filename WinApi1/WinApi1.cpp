@@ -63,7 +63,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
+    WNDCLASSEX wcex;
 
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_HREDRAW | CS_VREDRAW;
@@ -78,7 +78,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-    return RegisterClassExW(&wcex);
+    return RegisterClassEx(&wcex);
 }
 
 //
@@ -105,7 +105,7 @@ BOOL CreateAndShowWindow(HINSTANCE hInstance, int nCmdShow)
         CW_USEDEFAULT, // default width
         CW_USEDEFAULT, // default height
         HWND_DESKTOP, // parent window: desktop
-        nullptr, // no menu
+        nullptr, // no menu // LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MENU))
         hInstance, // program instance handle
         nullptr // no window creation data
     );
@@ -144,8 +144,8 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
-        case IDM_EXIT:
-            DestroyWindow(hWnd);
+        case IDM_EXIT: // Defined in WinApi.rc and Resource.h
+            DestroyWindow(hWnd); // Alternative: PostQuitMessage(0)
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
