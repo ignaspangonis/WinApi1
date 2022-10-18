@@ -39,10 +39,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="WinApi1.ico">
+    <Image Include="medal.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

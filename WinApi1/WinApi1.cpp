@@ -74,12 +74,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINAPI1));
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MEDAL));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(190, 210, 190)); // background color.
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDR_MENU);
     wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_MEDAL));
 
     return RegisterClassEx(&wcex);
 }
