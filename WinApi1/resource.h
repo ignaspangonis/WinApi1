@@ -15,6 +15,8 @@
 #define IDR_MENU1                       129
 #define IDC_STATIC                      -1
 
+#define ID_PRESS_ME_BUTTON				200
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

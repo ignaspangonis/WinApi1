@@ -10,12 +10,15 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+HWND pressMeButton;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                CreateAndShowWindow(HINSTANCE, int);
 LRESULT CALLBACK    WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+VOID                PaintSquare(HDC, int, int);
+HWND                CreateSquareButton(HMENU, HWND, LPWSTR, int, int);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -133,38 +136,57 @@ BOOL CreateAndShowWindow(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    const int randomNumber = rand() % 300;
+    const int randomNumberTwo = rand() % 300;
+
     switch (message)
     {
+    case WM_CREATE: 
+    {
+        pressMeButton = CreateSquareButton(
+            (HMENU)ID_PRESS_ME_BUTTON, hWnd, 
+            (LPWSTR)L"PRESS ME", 
+            10 + randomNumber, 
+            10 + randomNumberTwo
+        );
+        break;
+    }
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
         // Parse the menu selections:
         switch (wmId)
         {
-        case IDM_ABOUT:
+        case IDM_ABOUT: // Defined in WinApi.rc and Resource.h
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
-        case IDM_EXIT: // Defined in WinApi.rc and Resource.h
-            DestroyWindow(hWnd); // Alternative: PostQuitMessage(0)
+        case IDM_EXIT:
+            DestroyWindow(hWnd); // Sends WM_DESTROY
+            break;
+        case ID_PRESS_ME_BUTTON:
+            DestroyWindow(pressMeButton);
+            UpdateWindow(hWnd); // forces an immediate redraw for all currently accumulated invalidated areas
+
+            pressMeButton = CreateSquareButton(
+                (HMENU)ID_PRESS_ME_BUTTON, 
+                hWnd, (LPWSTR)L"PRESS ME",
+                10 + randomNumber, 
+                10 + randomNumberTwo
+            );
+
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
     }
     break;
-    // Allows to change how window is drawn
-    case WM_PAINT:
+    case WM_PAINT: // Allows to change how window is drawn
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
         // Drawing code
-        RECT rectangle;
-        rectangle.top = 100;
-        rectangle.right = 100;
-        rectangle.bottom = 200;
-        rectangle.left = 200;
-        FillRect(hdc, &rectangle, CreateSolidBrush(RGB(100, 10, 500)));
+        PaintSquare(hdc, 10 + randomNumber, 10 + randomNumberTwo);
 
         EndPaint(hWnd, &ps);
     }
@@ -196,4 +218,30 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+VOID PaintSquare(HDC hdc, int positionX, int positionY) 
+{
+    RECT rectangle;
+    rectangle.top = positionY;
+    rectangle.right = positionX;
+    rectangle.bottom = 100 + positionY;
+    rectangle.left = 100 + positionX;
+    FillRect(hdc, &rectangle, CreateSolidBrush(RGB(100, 10, 500)));
+}
+
+HWND CreateSquareButton(HMENU buttonId, HWND hWnd, LPWSTR text, int positionX, int positionY) {
+    return CreateWindow(
+        TEXT("BUTTON"),  // Predefined class; Unicode assumed 
+        TEXT("Press me"),      // Button text 
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+        positionX,         // x position 
+        positionY,         // y position 
+        100,        // Button width
+        100,        // Button height
+        hWnd,       // Parent window
+        (HMENU)buttonId,       // Optional (can pass NULL). ID of button
+        (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), // Optional (can pass NULL). Gets info about the hWnd window and GWLP_HINSTANCE app instance
+        NULL
+    );
 }
